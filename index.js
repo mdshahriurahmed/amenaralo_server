@@ -18,6 +18,14 @@ async function run() {
     try {
         await client.connect();
         const galleryCollection = client.db("amenarAlo").collection("Gallery");
+
+        // load all data for gallery
+        app.get('/gallery', async (req, res) => {
+            const query = {};
+            const cursor = galleryCollection.find(query);
+            const gallery = await cursor.toArray();
+            res.send(gallery);
+        })
     }
     finally {
 
