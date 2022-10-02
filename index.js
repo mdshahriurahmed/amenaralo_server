@@ -19,6 +19,7 @@ async function run() {
         await client.connect();
         const galleryCollection = client.db("amenarAlo").collection("Gallery");
         const mediaCollection = client.db("amenarAlo").collection("Media");
+        const storyCollection = client.db("amenarAlo").collection("Story");
 
         // load all data for gallery
         app.get('/gallery', async (req, res) => {
@@ -41,6 +42,22 @@ async function run() {
             const _id = req.params._id;
             const query = { _id: ObjectId(_id) };
             const media = await mediaCollection.findOne(query);
+            res.send(media);
+
+        })
+        // load all story data
+        app.get('/story', async (req, res) => {
+            const query = {};
+            const cursor = storyCollection.find(query);
+            const media = await cursor.toArray();
+            res.send(media);
+        })
+
+        // load story data by id
+        app.get('/story/:_id', async (req, res) => {
+            const _id = req.params._id;
+            const query = { _id: ObjectId(_id) };
+            const media = await storyCollection.findOne(query);
             res.send(media);
 
         })
