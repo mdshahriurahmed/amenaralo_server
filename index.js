@@ -1,6 +1,6 @@
 const express = require('express');
 var cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -27,11 +27,22 @@ async function run() {
             const gallery = await cursor.toArray();
             res.send(gallery);
         })
+
+        // load all media data
         app.get('/media', async (req, res) => {
             const query = {};
             const cursor = mediaCollection.find(query);
             const media = await cursor.toArray();
             res.send(media);
+        })
+
+        // load media data by id
+        app.get('/media/:_id', async (req, res) => {
+            const _id = req.params._id;
+            const query = { _id: ObjectId(_id) };
+            const media = await mediaCollection.findOne(query);
+            res.send(media);
+
         })
     }
     finally {
