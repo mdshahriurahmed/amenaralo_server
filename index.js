@@ -18,6 +18,7 @@ async function run() {
     try {
         await client.connect();
         const galleryCollection = client.db("amenarAlo").collection("Gallery");
+        const mediaCollection = client.db("amenarAlo").collection("Media");
 
         // load all data for gallery
         app.get('/gallery', async (req, res) => {
@@ -25,6 +26,12 @@ async function run() {
             const cursor = galleryCollection.find(query);
             const gallery = await cursor.toArray();
             res.send(gallery);
+        })
+        app.get('/media', async (req, res) => {
+            const query = {};
+            const cursor = mediaCollection.find(query);
+            const media = await cursor.toArray();
+            res.send(media);
         })
     }
     finally {
