@@ -1,5 +1,5 @@
 const express = require('express');
-const gallery = require('./gallery')
+
 var cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
