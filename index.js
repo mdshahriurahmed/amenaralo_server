@@ -21,6 +21,23 @@ async function run() {
         const galleryCollection = client.db("amenarAlo").collection("Gallery");
         const mediaCollection = client.db("amenarAlo").collection("Media");
         const storyCollection = client.db("amenarAlo").collection("Story");
+        const userCollection = client.db("amenarAlo").collection("Users");
+        const currentuserCollection = client.db("amenarAlo").collection("CurrentUsers");
+
+        // add new user
+
+        app.post('/Users', async (req, res) => {
+            const user = req.body;
+            const result = await userCollection.insertOne(user);
+            res.send(result);
+        })
+        // add new user
+
+        app.post('/CurrentUser', async (req, res) => {
+            const cuser = req.body;
+            const result = await currentuserCollection.insertOne(cuser);
+            res.send(result);
+        })
 
         // load all data for gallery
         app.get('/gallery', async (req, res) => {
