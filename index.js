@@ -31,12 +31,29 @@ async function run() {
             const result = await userCollection.insertOne(user);
             res.send(result);
         })
-        // add new user
+        // update current user info 
 
-        app.post('/CurrentUser', async (req, res) => {
+        app.post('/CurrentUser/:email', async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email };
+            console.log(email);
+            const options = { upsert: true };
             const cuser = req.body;
-            const result = await currentuserCollection.insertOne(cuser);
+            const updateDoc = {
+                $set: {
+                    plot: cuser
+                },
+            };
+            const result = await currentuserCollection.updateOne(filter, updateDoc, options);
             res.send(result);
+        })
+
+        // get user pass
+        app.get('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = await userCollection.findOne({ email: email });
+            res.send(user);
+
         })
 
         // load all data for gallery
