@@ -36,7 +36,7 @@ async function run() {
         app.post('/CurrentUser/:email', async (req, res) => {
             const email = req.params.email;
             const filter = { email: email };
-            console.log(email);
+
             const options = { upsert: true };
             const cuser = req.body;
             const updateDoc = {
@@ -51,7 +51,21 @@ async function run() {
         // get user pass
         app.get('/user/:email', async (req, res) => {
             const email = req.params.email;
+            const user = await currentuserCollection.findOne({ email: email });
+            res.send(user);
+
+        })
+        // get user information by email
+        app.get('/loginuser/:email', async (req, res) => {
+            const email = req.params.email;
             const user = await userCollection.findOne({ email: email });
+            res.send(user);
+
+        })
+        // get all users information
+        app.get('/alluser', async (req, res) => {
+
+            const user = await userCollection.find().toArray();
             res.send(user);
 
         })
