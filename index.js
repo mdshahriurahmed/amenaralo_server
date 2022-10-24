@@ -110,6 +110,30 @@ async function run() {
             res.send(media);
 
         })
+
+        // make moderator api
+        app.put('/user/make-moderator/:email', async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email };
+            const updateDoc = {
+                $set: { role: 'Moderator' },
+            };
+            const result = await userCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        })
+
+        // verify user
+        app.get('/isuser/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = await userCollection.findOne({ email: email });
+            if (user) {
+                res.send(true);
+            }
+            else {
+                res.send(false);
+            }
+
+        })
     }
     finally {
 
