@@ -23,12 +23,29 @@ async function run() {
         const storyCollection = client.db("amenarAlo").collection("Story");
         const userCollection = client.db("amenarAlo").collection("Users");
         const currentuserCollection = client.db("amenarAlo").collection("CurrentUsers");
+        const classCollection = client.db("amenarAlo").collection("ClassList");
+        const childrenCollection = client.db("amenarAlo").collection("Children");
 
         // add new user
 
         app.post('/Users', async (req, res) => {
             const user = req.body;
             const result = await userCollection.insertOne(user);
+            res.send(result);
+        })
+        // add new Childrens
+
+        app.post('/Childrens', async (req, res) => {
+            const Children = req.body;
+            const result = await childrenCollection.insertOne(Children);
+            res.send(result);
+        })
+
+        // delete a user
+        app.delete('/delete-user/:email', async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email };
+            const result = await userCollection.deleteOne(filter);
             res.send(result);
         })
         // update current user info 
@@ -67,7 +84,6 @@ async function run() {
 
             const user = await userCollection.find().toArray();
             res.send(user);
-
         })
 
         // load all data for gallery
@@ -134,6 +150,13 @@ async function run() {
             }
 
         })
+
+        app.get('/classes', async (req, res) => {
+            const query = {};
+            const cursor = classCollection.find(query).project({ clstitle: 1 });
+            const classes = await cursor.toArray();
+            res.send(classes);
+        });
     }
     finally {
 
