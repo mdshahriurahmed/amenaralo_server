@@ -25,6 +25,7 @@ async function run() {
         const currentuserCollection = client.db("amenarAlo").collection("CurrentUsers");
         const classCollection = client.db("amenarAlo").collection("ClassList");
         const childrenCollection = client.db("amenarAlo").collection("Children");
+        const sidCollection = client.db("amenarAlo").collection("sId");
 
         // add new user
 
@@ -33,13 +34,7 @@ async function run() {
             const result = await userCollection.insertOne(user);
             res.send(result);
         })
-        // add new Childrens
 
-        app.post('/Childrens', async (req, res) => {
-            const Children = req.body;
-            const result = await childrenCollection.insertOne(Children);
-            res.send(result);
-        })
 
         // delete a user
         app.delete('/delete-user/:email', async (req, res) => {
@@ -151,12 +146,62 @@ async function run() {
 
         })
 
+        // this api's for manage children related options
+        // add new Childrens
+
+        app.post('/Childrens', async (req, res) => {
+            const Children = req.body;
+            const result = await childrenCollection.insertOne(Children);
+            res.send(result);
+        })
+
+        // class list
         app.get('/classes', async (req, res) => {
             const query = {};
             const cursor = classCollection.find(query).project({ clstitle: 1 });
             const classes = await cursor.toArray();
             res.send(classes);
         });
+
+        // current student id
+        app.get('/currentid', async (req, res) => {
+            const query = {};
+            const cursor = sidCollection.find(query).project({ cid: 1 });
+            const cid = await cursor.toArray();
+            res.send(cid);
+        });
+
+        // update current id
+
+        app.post('/currentid/:id', async (req, res) => {
+            const id = "635ceb379dfb9c79856d6103";
+            const tool = req.body;
+            const filter = { _id: ObjectId(id) };
+
+            const options = { upsert: true };
+            const newid = req.body;
+            const updateDoc = {
+                $set: newid,
+
+            };
+            const result = await sidCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        })
+
+        // get all users information
+        app.get('/allchildren', async (req, res) => {
+
+            const user = await childrenCollection.find().toArray();
+            res.send(user);
+        })
+
+        // delete a child
+        app.delete('/delete-child/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await childrenCollection.deleteOne(filter);
+            res.send(result);
+        })
     }
     finally {
 
