@@ -175,9 +175,7 @@ async function run() {
 
         app.post('/currentid/:id', async (req, res) => {
             const id = "635ceb379dfb9c79856d6103";
-            const tool = req.body;
             const filter = { _id: ObjectId(id) };
-
             const options = { upsert: true };
             const newid = req.body;
             const updateDoc = {
@@ -201,6 +199,15 @@ async function run() {
             const filter = { _id: ObjectId(id) };
             const result = await childrenCollection.deleteOne(filter);
             res.send(result);
+        })
+
+        // find a children
+        app.get('/children/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const filter = { _id: ObjectId(id) };
+            const children = await childrenCollection.findOne(filter);
+            res.send(children);
         })
     }
     finally {
