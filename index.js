@@ -134,7 +134,8 @@ async function run() {
 
 
 
-        // get user information by email
+        // update email when changed
+
         app.put('/usernew1/:mobile', async (req, res) => {
             const mobile = req.params.mobile;
             const filter = { mobile: mobile };
