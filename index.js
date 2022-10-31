@@ -119,7 +119,6 @@ async function run() {
             const query = { _id: ObjectId(_id) };
             const media = await storyCollection.findOne(query);
             res.send(media);
-
         })
 
         // make moderator api
@@ -132,6 +131,23 @@ async function run() {
             const result = await userCollection.updateOne(filter, updateDoc);
             res.send(result);
         })
+
+
+
+        // get user information by email
+        app.put('/usernew1/:mobile', async (req, res) => {
+            const mobile = req.params.mobile;
+            const filter = { mobile: mobile };
+            const newm = req.body;
+            const updateDoc = {
+                $set: { email: `${newm.email}` },
+            };
+            const result = await userCollection.updateOne(filter, updateDoc);
+            res.send(result);
+
+        })
+
+
 
         // verify user
         app.get('/isuser/:email', async (req, res) => {
@@ -204,7 +220,7 @@ async function run() {
         // find a children
         app.get('/children/:id', async (req, res) => {
             const id = req.params.id;
-            console.log(id);
+
             const filter = { _id: ObjectId(id) };
             const children = await childrenCollection.findOne(filter);
             res.send(children);
