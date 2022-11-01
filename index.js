@@ -2,6 +2,7 @@ const express = require('express');
 
 var cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { request } = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -26,6 +27,7 @@ async function run() {
         const classCollection = client.db("amenarAlo").collection("ClassList");
         const childrenCollection = client.db("amenarAlo").collection("Children");
         const sidCollection = client.db("amenarAlo").collection("sId");
+        const resultsCollection = client.db("amenarAlo").collection("Results");
 
         // add new user
 
@@ -205,7 +207,6 @@ async function run() {
 
         // get all users information
         app.get('/allchildren', async (req, res) => {
-
             const user = await childrenCollection.find().toArray();
             res.send(user);
         })
@@ -221,10 +222,28 @@ async function run() {
         // find a children
         app.get('/children/:id', async (req, res) => {
             const id = req.params.id;
-
             const filter = { _id: ObjectId(id) };
             const children = await childrenCollection.findOne(filter);
             res.send(children);
+        })
+
+
+        // insert result
+
+        app.post('/result', async (req, res) => {
+            const info = req.body;
+            const query = {
+                register_id: info.register_id,
+                clstitle: info.clstitle,
+                exam: info.exam,
+            }
+            const exists = await resultsCollection.findOne(query);
+            if (exists) {
+                return res.send({ success: false, booking: exists })
+            }
+
+            const result = await resultsCollection.insertOne(info);
+            res.send({ success: true, result });
         })
     }
     finally {
