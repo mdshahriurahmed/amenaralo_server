@@ -205,9 +205,14 @@ async function run() {
             res.send(result);
         })
 
-        // get all users information
+        // get all childrens information
         app.get('/allchildren', async (req, res) => {
             const user = await childrenCollection.find().toArray();
+            res.send(user);
+        })
+        // get all result request information
+        app.get('/resultrequests', async (req, res) => {
+            const user = await resultsCollection.find().toArray();
             res.send(user);
         })
 
@@ -245,6 +250,27 @@ async function run() {
             const result = await resultsCollection.insertOne(info);
             res.send({ success: true, result });
         })
+
+        // find a result details
+        app.get('/resultdetails/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await resultsCollection.findOne(filter);
+            res.send(result);
+        })
+
+
+        // approve result
+        app.put('/approved/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const updateDoc = {
+                $set: { status: 'Approved' },
+            };
+            const result = await resultsCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        })
+
     }
     finally {
 
