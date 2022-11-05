@@ -279,6 +279,14 @@ async function run() {
             res.send(result);
         })
 
+        // find a childrens all result
+        app.get('/view-a-result', async (req, res) => {
+            const id = req.query.id;
+            const childresult = await resultsCollection.find().toArray();
+
+            res.send(childresult);
+        })
+
     }
     finally {
 
