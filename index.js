@@ -50,7 +50,6 @@ async function run() {
         app.post('/CurrentUser/:email', async (req, res) => {
             const email = req.params.email;
             const filter = { email: email };
-
             const options = { upsert: true };
             const cuser = req.body;
             const updateDoc = {
@@ -78,7 +77,6 @@ async function run() {
         })
         // get all users information
         app.get('/alluser', async (req, res) => {
-
             const user = await userCollection.find().toArray();
             res.send(user);
         })
@@ -246,7 +244,6 @@ async function run() {
             if (exists) {
                 return res.send({ success: false, booking: exists })
             }
-
             const result = await resultsCollection.insertOne(info);
             res.send({ success: true, result });
         })
@@ -266,6 +263,17 @@ async function run() {
             const filter = { _id: ObjectId(id) };
             const updateDoc = {
                 $set: { status: 'Approved' },
+            };
+            const result = await resultsCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        })
+        // decline result
+        app.put('/declined/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const cmnt = req.body;
+            const updateDoc = {
+                $set: { status: 'Declined', comment: `${cmnt.comment}` },
             };
             const result = await resultsCollection.updateOne(filter, updateDoc);
             res.send(result);
